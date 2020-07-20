@@ -1,0 +1,189 @@
+{% load static %}
+{% include 'header.html' %}
+		{% if request.session.username %}
+			<div class="form_page">
+				<div class="card">
+		            <h5 class="card-header">Update Assign Subject To Teachers</h5>
+		            <div class="card-body">
+						<form id="post-form2" method="Post">{% csrf_token %}
+			                <div class="form-group row">
+			                    <label class="col-3 col-lg-2 col-form-label text-right">Teacher</label>
+			                    <div class="col-9 col-lg-10">
+			                        {{form.staff_id}}
+			                    </div>
+			                    {{form.staff_id.errors}}
+			                </div>
+			                <div class="form-group row">
+			                    <label class="col-3 col-lg-2 col-form-label text-right">Academic Year</label>
+			                    <div class="col-9 col-lg-10">
+			                        {{form.academic_year}}
+			                        {{form.academic_year.errors}}
+			                    </div>
+			                </div>
+
+								<div class='container parent-container' id="assign_calss_teacher">
+									
+									<div class='form-row'>
+										<div class='col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 mb-2'>
+											<label for='validationCustom03'>Class</label>
+											  {{form.class_id}}
+										</div>{{form.class_id.errors}}<div class='col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 mb-2'>
+											<label  >Section</label>
+											{{form.section_id}}
+			                       			 {{form.section_id.errors}}
+										</div>
+										<div class='col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 mb-2'>
+											<label >Subject</label>
+											{{form.subject_id}}
+			                       			 {{form.subject_id.errors}}
+										</div>
+										<div class='col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 mb-2'>
+											<label for='ClassTeacher'>Class Teacher</label>
+											<br>
+											
+											<label class='custom-control custom-radio custom-control-inline'>
+												<input type='radio' name='is_class_teacher'  value="yes"   checked="checked" class='custom-control-input'><span class='custom-control-label'>Yes</span></label>
+												<label class='custom-control custom-radio custom-control-inline'><input type='radio' name='is_class_teacher'  class='custom-control-input' value="no"><span class='custom-control-label'>No</span></label>
+												
+										</div></div></div>
+			                <div class="row pt-2 pt-sm-5 mt-1">
+			                    <div class="col-sm-6 pb-2 pb-sm-4 pb-lg-0 pr-0">
+			                        
+			                    </div>
+			                    <div class="col-sm-6 pl-0">
+			                        <p class="text-right">
+			                            <input type="submit" class="btn btn-space btn-primary" value="Update">
+			                            <input type="reset" class="btn btn-space btn-secondary" value="Cancel">
+			                        </p>
+			                    </div>
+			                </div>
+			            </form>
+	           </div>
+	         </div>
+	      </div>
+		{% endif %}
+{% include 'footer.html' %}  
+ <script src="{% static 'assets/libs/js/custom.js' %}"></script>    
+<script type="text/javascript">
+    $.noConflict();
+    jQuery(document).ready(function(){
+    	 jQuery.ajax({
+        type:'POST',
+        url:'{% url "select_class" %}',
+        data: jQuery("#post-form2").serialize(),
+        success: function (data) {
+            var option_value ="";
+            for(i=0;i<data['row']['length'];i++)
+            {
+
+               class_id = data['row'][i][0];
+               class_name = data['row'][i][1];
+               option_value += '<option value=' + class_id + '>' + class_name + '</option>';
+               
+                
+            }
+           
+            jQuery('#id_class_id').html(option_value);
+
+             console.log(data['row']);
+           
+        }
+    });
+    jQuery('#id_class_id').on('change', function() {
+    jQuery.ajax({
+        type:'POST',
+        url:'{% url "select_section" %}',
+        data: jQuery("#post-form2").serialize(),
+        success: function (data) {
+            var option_value="";
+
+            for(i=0;i<data['rowval']['length'];i++)
+            {
+
+               section_id = data['rowval'][i][4];
+               section_name = data['rowval'][i][5];
+               option_value += '<option value=' + section_id + '>' + section_name + '</option>';
+               
+
+            }
+            sec = '<option>Select</option>';
+            jQuery('#id_section_id').html(sec+option_value);
+             console.log(data['rowval']);
+           
+        }
+    });
+     });
+    jQuery('#id_section_id').on('focus', function() {
+    jQuery.ajax({
+        type:'POST',
+        url:'{% url "select_section" %}',
+        data: jQuery("#post-form2").serialize(),
+        success: function (data) {
+            var option_value="";
+
+            for(i=0;i<data['rowval']['length'];i++)
+            {
+
+               section_id = data['rowval'][i][4];
+               section_name = data['rowval'][i][5];
+               option_value += '<option value=' + section_id + '>' + section_name + '</option>';
+               
+
+            }
+            sec = '<option>Select</option>';
+            jQuery('#id_section_id').html(sec+option_value);
+             console.log(data['rowval']);
+           
+        }
+    });
+     });
+    jQuery('#id_section_id').on('change', function() {
+    jQuery.ajax({
+        type:'POST',
+        url:'{% url "select_subject" %}',
+        data: jQuery("#post-form2").serialize(),
+        success: function (data) {
+            var option_value="";
+
+            for(i=0;i<data['subject']['length'];i++)
+            {
+
+               subject_id = data['subject'][i][8];
+               subject_name = data['subject'][i][9];
+               option_value += '<option value=' + subject_id + '>' + subject_name + '</option>';
+               
+
+            }
+            sec = '<option>Select</option>';
+            jQuery('#id_subject_id').html(sec+option_value);
+             console.log(data['subject']);
+           
+        }
+    });
+     });
+    jQuery('#id_subject_id').on('focus', function() {
+    jQuery.ajax({
+        type:'POST',
+        url:'{% url "select_subject" %}',
+        data: jQuery("#post-form2").serialize(),
+        success: function (data) {
+            var option_value="";
+
+            for(i=0;i<data['subject']['length'];i++)
+            {
+
+               subject_id = data['subject'][i][8];
+               subject_name = data['subject'][i][9];
+               option_value += '<option value=' + subject_id + '>' + subject_name + '</option>';
+               
+
+            }
+            sec = '<option>Select</option>';
+            jQuery('#id_subject_id').html(sec+option_value);
+             console.log(data['subject']);
+           
+        }
+    });
+     });
+    });
+</script>                   

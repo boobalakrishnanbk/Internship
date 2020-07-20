@@ -1,0 +1,10 @@
+{% include 'header.html' %}
+		{% if request.session.username %}
+			<h2>Username: {{request.session.username}}</h2>
+			{% for user in query %}
+				<h3>School Name: {{user.schoolname}}</h3>
+			{% endfor %}
+		{% endif %}
+	{% include 'footer.html' %}  
+              
+                   
